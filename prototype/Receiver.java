@@ -1,4 +1,6 @@
+// Parses btmon output
 import java.io.*;
+import java.util.*;
 import java.util.regex.*;
 
 class Receiver {
@@ -12,6 +14,10 @@ class Receiver {
 	String mac = null;
 	Integer rssi = null;
 	boolean found = false;
+	Map<String, Integer> rssiMap = new HashMap<String, Integer>();
+
+	// Set up which MAC addresses to follow
+	rssiMap.put("D2:D7:7E:14:19:00", null);
 	
 	while (true) {
 	    String line;
@@ -42,10 +48,18 @@ class Receiver {
 	    // Collect the packet data, do it now
 	    if (!found && mac != null && rssi != null) {
 		found = true;
-		System.out.println("MAC on "+mac+" ja RSSI on "+rssi);
+		if (rssiMap.containsKey(mac)) {
+		    // We are listening to this MAC, so recording data
+		    Object old = rssiMap.put(mac, rssi);
+
+		    // Report to debug screen
+		    if (old == null) {
+			System.out.println("Beacon found: "+mac);
+		    }
+		}
 	    }
 	}
 
-	System.out.println("juuhhh");
+	System.out.println("btmon closed");
     }
 }
