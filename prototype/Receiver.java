@@ -10,7 +10,7 @@ class Receiver {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in)); 
 
 	Pattern p = Pattern.compile("^(>).*|^[ \t]*([^:]*): *([^ ]*).*");
-	
+
 	String mac = null;
 	Integer rssi = null;
 	boolean found = false;
@@ -22,7 +22,14 @@ class Receiver {
 	}
 	
 	// Start the game in a thread
-	Thread radioactivityThread = new Thread(new Radioactivity(rssiMap));
+	Radioactivity radioactivity;
+	try {
+	    radioactivity = new Radioactivity(0);
+	} catch (IOException e) {
+	    System.out.println("Error while creating game object");
+	    return;
+	}
+	Thread radioactivityThread = new Thread(radioactivity);
 	radioactivityThread.start();
 
 	while (true) {
@@ -56,12 +63,16 @@ class Receiver {
 		found = true;
 		if (rssiMap.containsKey(mac)) {
 		    // We are listening to this MAC, so recording data
-		    Object old = rssiMap.put(mac, rssi);
+		    Integer oldRssi = rssiMap.put(mac, rssi);
 
 		    // Report to debug screen
-		    if (old == null) {
+		    if (oldRssi == null) {
 			System.out.println("Beacon found: "+mac);
 		    }
+
+		    // Report update to the game. It linearizes
+		    // decibels for us.
+		    radioactivity.updateSum(oldRssi, rssi);
 		}
 	    }
 	}

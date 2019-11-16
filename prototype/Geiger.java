@@ -30,6 +30,6 @@ public class Geiger {
 	// filter to simulate the perceived sound.
 	double filteredSample = fir.getOutputSample(beep ? 1 : 0);
 
-	return (short)(filteredSample * Short.MAX_VALUE);
+	return filteredSample;
     }
 }

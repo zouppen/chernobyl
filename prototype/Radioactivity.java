@@ -1,50 +1,76 @@
 // Radioactive decay calculations
 import java.util.*;
+import java.io.*;
 
 public class Radioactivity implements Runnable {
 
     // Geiger counter sensitivity. Larger values; more beeps
-    private static double sensitivity = 0.00003;
+    private static double sensitivity = 1e11;
+    private static int screenFps = 2;
+
     private Map<String,Integer> rssiMap;
     private String[] sources;
-    private Random random = new Random();
+    private Geiger geiger = new Geiger();
+
+    // Power of all signal combined (watts)
+    private double powerAll;
+
+    // Write raw samples to a FIFO. FIXME temporary.
+    BufferedWriter audio;
     
-    public Radioactivity(Map<String,Integer> rssiMap) {
-	this.rssiMap = rssiMap;
+    // Update current radiation level. Old value must be given so we
+    // can substract it before adding new one. Units are decibels!
+    public synchronized void updateSum(Integer minusdB, Integer plusdB) { 
+	if (minusdB != null) {
+	    powerAll -= linearize(minusdB);
+	}
+	powerAll += linearize(plusdB);
+	System.out.println("Updated RSSI to " + plusdB);
+    }
+    
+    public Radioactivity(double backgroundRadiation) throws IOException {
+	this.powerAll = backgroundRadiation;
+	this.audio = new BufferedWriter(new FileWriter("/tmp/geiger.raw"));
+    }
+
+    public static double linearize(double dB) {
+	return Math.pow(10, (double)dB/10);
     }
     
     public void run() {
 	// Dose is energy (joules)
 	double dose = 0;
-	
+
+	// Screen is display counter
+	int screenSleep = 0;
+
+	// Run for every sample. TODO must be rate-limited
 	while (true) {
-	    // totalPower is power of all beacons combined (watts)
-	    double totalPower = 0;
-	    
-	    System.out.println("RSSI dump");
-	    for (Integer signal : rssiMap.values()) {
-		System.out.println("RSSI " + signal);
-		if (signal == null) continue; // Beacon not yet seen
+	    // Energy of this sample is power of all beacons divided
+	    // by samples per second
+	    double energy = powerAll / Geiger.sampleRate;
 
-		double power = Math.pow(10, (double)signal/10);
-		totalPower += power;
-		System.out.println("Beacon power: "+power);
+	    // Calculating cumulative dose.
+	    dose += energy;
+
+	    // Generating sound
+	    double rate = energy * sensitivity;
+	    double sample = geiger.getSample(rate);
+	    short sampleShort = (short)(sample * Short.MAX_VALUE);	    
+
+	    // Update screen
+	    if (screenSleep == 0) {
+		System.out.println("Power: " + powerAll + " dose: " + dose);
+		screenSleep = Geiger.sampleRate / screenFps;
 	    }
+	    screenSleep--;
 
-	    // Simulating geiger counter by calculating the beep
-	    // interval using exponential distribution quantile
-	    // function:
-	    // https://en.wikipedia.org/wiki/Exponential_distribution
-	    double interval = -Math.log(1-random.nextDouble())/totalPower*sensitivity;
-	    System.out.println("Beep interval: " + interval);
-	    
-	    dose += totalPower;
-	    System.out.println("Power: "+totalPower+ " dose: " + dose);
-	    
 	    try {
-		Thread.sleep(1000);
-	    } catch (InterruptedException e) {
-		System.out.println("Spurious interrupt");
+		audio.write(sampleShort & 0xff);
+		audio.write(sampleShort >> 8);
+	    } catch (IOException e) {
+		System.out.println("WRITE ERROR");
+		return;
 	    }
 	}
     }
