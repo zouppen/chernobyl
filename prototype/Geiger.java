@@ -1,6 +1,9 @@
 import java.util.*;
 
 public class Geiger {
+
+    public final static int sampleRate = 48000;
+    
     // FIR bandbass filter coefficients. 1500...4000 Hz, transition
     // 1000 attenuation -40dB, filter gain 5dB. For 48000Hz sample
     // rate. Generated with GNU Radio filter design tool.
@@ -9,15 +12,24 @@ public class Geiger {
     private final Random random = new Random();
     private FIR fir = new FIR(taps);
 
-    public double getSample(double threshold) {
-	double val = random.nextDouble();
+    public double getSample(double rate) {
+	// Simulating geiger counter by calculating the beep
+	// interval using exponential distribution quantile
+	// function:
+	// https://en.wikipedia.org/wiki/Exponential_distribution
+	double interval = -Math.log(1-random.nextDouble())/rate;
+
+	// If the beep interval is less than the length of this
+	// sample, it means the Geiger-Müller tube conducts during
+	// this sample – we hear a beep.
+	boolean beep = interval * sampleRate < 1;
 
 	// Simulating geiger counter piezo speaker by generating
 	// sample "1" in case of conductivity and 0 otherwise. The
 	// audio is then fed into FIR filter which does bandbass
 	// filter to simulate the perceived sound.
-	double sampleDouble = fir.getOutputSample(val < threshold ? 1 : 0);
-	short sample = (short)(sampleDouble * Short.MAX_VALUE);
-	return sample;
+	double filteredSample = fir.getOutputSample(beep ? 1 : 0);
+
+	return (short)(filteredSample * Short.MAX_VALUE);
     }
 }
