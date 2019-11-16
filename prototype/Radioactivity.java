@@ -60,7 +60,10 @@ public class Radioactivity implements Runnable {
 
 	    // Update screen
 	    if (screenSleep == 0) {
-		System.out.println("Power: " + powerAll + " dose: " + dose);
+		// Show dose in something like sieverts
+		double mSv = dose*1e5;
+		String extra = mSv > 1000  ? " GAME OVER!" : "";
+		System.out.format("Cumulative dose: %.2f mSv%s%n", mSv, extra);
 		screenSleep = Geiger.sampleRate / screenFps;
 	    }
 	    screenSleep--;
