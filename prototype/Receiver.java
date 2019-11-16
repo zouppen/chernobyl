@@ -17,7 +17,9 @@ class Receiver {
 	Map<String, Integer> rssiMap = new HashMap<String, Integer>();
 
 	// Set up which MAC addresses to follow
-	rssiMap.put("D2:D7:7E:14:19:00", null);
+	for (String arg : args) {
+	    rssiMap.put(arg, null);
+	}
 	
 	while (true) {
 	    String line;
