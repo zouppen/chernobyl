@@ -3,8 +3,11 @@ import java.util.*;
 
 public class Radioactivity implements Runnable {
 
-    Map<String,Integer> rssiMap;
-    String[] sources;
+    // Geiger counter sensitivity. Larger values; more beeps
+    private static double sensitivity = 0.00003;
+    private Map<String,Integer> rssiMap;
+    private String[] sources;
+    private Random random = new Random();
     
     public Radioactivity(Map<String,Integer> rssiMap) {
 	this.rssiMap = rssiMap;
@@ -27,6 +30,14 @@ public class Radioactivity implements Runnable {
 		totalPower += power;
 		System.out.println("Beacon power: "+power);
 	    }
+
+	    // Simulating geiger counter by calculating the beep
+	    // interval using exponential distribution quantile
+	    // function:
+	    // https://en.wikipedia.org/wiki/Exponential_distribution
+	    double interval = -Math.log(1-random.nextDouble())/totalPower*sensitivity;
+	    System.out.println("Beep interval: " + interval);
+	    
 	    dose += totalPower;
 	    System.out.println("Power: "+totalPower+ " dose: " + dose);
 	    
