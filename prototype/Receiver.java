@@ -21,6 +21,10 @@ class Receiver {
 	    rssiMap.put(arg, null);
 	}
 	
+	// Start the game in a thread
+	Thread radioactivityThread = new Thread(new Radioactivity(rssiMap));
+	radioactivityThread.start();
+
 	while (true) {
 	    String line;
 	    try {
