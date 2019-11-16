@@ -1,9 +1,9 @@
 // Radioactive decay calculations
 import java.util.*;
 import java.io.*;
+import javax.sound.sampled.LineUnavailableException;
 
 public class Radioactivity implements Runnable {
-
     // Geiger counter sensitivity. Larger values; more beeps
     private static double sensitivity = 1e11;
     private static int screenFps = 2;
@@ -16,7 +16,7 @@ public class Radioactivity implements Runnable {
     private double powerAll;
 
     // Write raw samples to a FIFO. FIXME temporary.
-    BufferedWriter audio;
+    Audio audio;
     
     // Update current radiation level. Old value must be given so we
     // can substract it before adding new one. Units are decibels!
@@ -28,9 +28,9 @@ public class Radioactivity implements Runnable {
 	System.out.println("Updated RSSI to " + plusdB);
     }
     
-    public Radioactivity(double backgroundRadiation) throws IOException {
+    public Radioactivity(double backgroundRadiation) throws IOException, LineUnavailableException {
 	this.powerAll = backgroundRadiation;
-	this.audio = new BufferedWriter(new FileWriter("/tmp/geiger.raw"));
+	this.audio = new Audio();
     }
 
     public static double linearize(double dB) {
@@ -65,13 +65,7 @@ public class Radioactivity implements Runnable {
 	    }
 	    screenSleep--;
 
-	    try {
-		audio.write(sampleShort & 0xff);
-		audio.write(sampleShort >> 8);
-	    } catch (IOException e) {
-		System.out.println("WRITE ERROR");
-		return;
-	    }
+	    audio.write(sampleShort);
 	}
     }
 }

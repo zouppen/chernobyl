@@ -25,8 +25,8 @@ class Receiver {
 	Radioactivity radioactivity;
 	try {
 	    radioactivity = new Radioactivity(0);
-	} catch (IOException e) {
-	    System.out.println("Error while creating game object");
+	} catch (Exception e) {
+	    System.out.println("Error while creating game object: " + e);
 	    return;
 	}
 	Thread radioactivityThread = new Thread(radioactivity);
