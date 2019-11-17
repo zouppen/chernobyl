@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -17,13 +18,14 @@ public class Ui extends JFrame {
     public void updateDose(double dose) {
 	String payload = String.format("Dose: %.2f mSv", dose);
 	display.setText(payload);
-	progBar.setValue((int)dose);
 
 	if (dose > MAX_VAL) {
-	    progBar.setStringPainted(true);
+	    progBar.setValue(MAX_VAL);
 	    progBar.setForeground(Color.red);
 	    progBar.setString("DEAD");
 	    startBtn.setEnabled(false);
+	} else {
+	    progBar.setValue(MAX_VAL-(int)dose);
 	}
     }
 
@@ -37,14 +39,18 @@ public class Ui extends JFrame {
 
     private void initUI() {
 
-        progBar = new JProgressBar(0, MAX_VAL);
+	progBar = new JProgressBar(0, MAX_VAL);
 	progBar.setOrientation(JProgressBar.VERTICAL);
-        progBar.setStringPainted(true);
+	progBar.setStringPainted(true);
 
 	display = new JLabel("XXXXXXXXXXXXXX");
 	
         startBtn = new JButton("Start");
         startBtn.addActionListener(new ClickAction());
+
+	fixFont(display);
+	fixFont(progBar);
+	fixFont(startBtn);
 
         createLayout(progBar, display, startBtn);
 
@@ -79,6 +85,10 @@ public class Ui extends JFrame {
         );
 
         pack();
+    }
+
+    private static void fixFont(JComponent c) {
+	c.setFont(new Font("Ubuntu", Font.PLAIN, 30));
     }
 
     private class ClickAction extends AbstractAction {
