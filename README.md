@@ -9,8 +9,8 @@ or Wi-Fi beacons which represent radioactive sources. The objective is
 to clean the environment and get as small dose of radioactivity as
 possible. You have to act fast but avoid near exposure to the sources.
 
-In addition having fun with this game you also learn how radio waves
-propagates.
+In addition having fun with this game you also learn how microwave
+radio signals propagate.
 
 ## Android application
 
@@ -23,6 +23,8 @@ is much more playable.
 This repository has desktop version which will be ported to mobile
 platforms after Junction. This doesn't use prerecorded samples but all
 audio is rendered in real time using scientifically sound algoritms.
+
+![Debug view of the application](docs/tui.png)
 
 ### Processing RSSI to "mock radiation"
 
