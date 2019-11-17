@@ -11,6 +11,7 @@ public class Radioactivity implements Runnable {
     private Map<String,Integer> rssiMap;
     private String[] sources;
     private Geiger geiger = new Geiger();
+    private Ui ui = new Ui();
 
     // Power of all signal combined (watts)
     private double powerAll;
@@ -38,6 +39,8 @@ public class Radioactivity implements Runnable {
     }
     
     public void run() {
+	ui.setVisible(true);
+
 	// Dose is energy (joules)
 	double dose = 0;
 
@@ -51,7 +54,9 @@ public class Radioactivity implements Runnable {
 	    double energy = powerAll / Geiger.sampleRate;
 
 	    // Calculating cumulative dose.
-	    dose += energy;
+	    if (ui.isRunning()) {
+		dose += energy;
+	    }
 
 	    // Generating sound
 	    double rate = energy * sensitivity;
@@ -62,8 +67,7 @@ public class Radioactivity implements Runnable {
 	    if (screenSleep == 0) {
 		// Show dose in something like sieverts
 		double mSv = dose*1e5;
-		String extra = mSv > 1000  ? " GAME OVER!" : "";
-		System.out.format("Cumulative dose: %.2f mSv%s%n", mSv, extra);
+		ui.updateDose(mSv);
 		screenSleep = Geiger.sampleRate / screenFps;
 	    }
 	    screenSleep--;
