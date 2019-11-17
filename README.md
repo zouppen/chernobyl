@@ -1,5 +1,7 @@
 # Chernobyl
 
+![City of Pripyat (public domain)](docs/pripyat.jpg)
+
 A game of cleaning radioactive environment by collecting contaminated particles.
 
 ## Objective
