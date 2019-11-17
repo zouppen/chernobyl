@@ -46,6 +46,8 @@ it is applied to a FIR filter which does a band-pass between 1500
 ... 4000 Hz which simulates the physical properties of the speaker
 case.
 
+![FIR filtering](docs/fir.png)
+
 This resusts a "retro" sound because many modern radiation meters have
 oscillator and a speaker instead of this. But we want the sound of the
 1980s.
@@ -54,6 +56,8 @@ In case you want to tune your speaker, feel free to regenerate FIR
 filter. Filter parameters are [attached](prototype/geiger_filter.txt)
 and they work with
 [GNU Radio Filter Design Tool](http://www.trondeau.com/home/2012/12/19/update-on-filter-design-tool.html).
+
+![Filter design tool](docs/gr_filter_design.png)
 
 ### Running
 
