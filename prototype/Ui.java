@@ -16,7 +16,7 @@ public class Ui extends JFrame {
     private boolean running = false;
 
     public void updateDose(double dose) {
-	String payload = String.format("Dose: %.2f mSv", dose);
+	String payload = String.format("Dose: %6.2f mSv", dose);
 	display.setText(payload);
 
 	if (dose > MAX_VAL) {
@@ -90,7 +90,7 @@ public class Ui extends JFrame {
     }
 
     private static void fixFont(JComponent c) {
-	c.setFont(new Font("Ubuntu", Font.PLAIN, 60));
+	c.setFont(new Font("Ubuntu Mono", Font.PLAIN, 60));
     }
 
     private class ClickAction extends AbstractAction {
