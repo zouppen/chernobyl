@@ -26,7 +26,9 @@ This repository has desktop version which will be ported to mobile
 platforms after Junction. This doesn't use prerecorded samples but all
 audio is rendered in real time using scientifically sound algoritms.
 
-![Debug view of the application](docs/tui.png)
+![View of the development version](docs/java-ui.png)
+
+UI prototype is built using Java Swing.
 
 ### Processing RSSI to "mock radiation"
 
