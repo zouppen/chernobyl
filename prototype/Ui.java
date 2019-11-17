@@ -38,6 +38,8 @@ public class Ui extends JFrame {
     }
 
     private void initUI() {
+	setExtendedState(JFrame.MAXIMIZED_BOTH);
+	setUndecorated(true);
 
 	progBar = new JProgressBar(0, MAX_VAL);
 	progBar.setOrientation(JProgressBar.VERTICAL);
@@ -88,7 +90,7 @@ public class Ui extends JFrame {
     }
 
     private static void fixFont(JComponent c) {
-	c.setFont(new Font("Ubuntu", Font.PLAIN, 30));
+	c.setFont(new Font("Ubuntu", Font.PLAIN, 60));
     }
 
     private class ClickAction extends AbstractAction {
