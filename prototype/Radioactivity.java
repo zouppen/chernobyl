@@ -8,7 +8,6 @@ public class Radioactivity implements Runnable {
     private static double sensitivity = 1e11;
     private static int screenFps = 2;
 
-    private Map<String,Integer> rssiMap;
     private String[] sources;
     private Geiger geiger = new Geiger();
     private Ui ui = new Ui();
