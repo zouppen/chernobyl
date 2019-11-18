@@ -86,7 +86,7 @@ Project doesn't yet have a build file so running is a bit manual:
 ```sh
 cd prototype
 javac Receiver.java
-sudo btmon | java Receiver BEACON_MACS...
+sudo stdbuf -oL btmon | java Receiver BEACON_MACS...
 ```
 
 RSSI is read from Bluetooth stack temporarily using `btmon` until we
