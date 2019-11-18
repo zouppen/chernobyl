@@ -2,7 +2,10 @@
 
 ![City of Pripyat (public domain)](docs/pripyat.jpg)
 
-A game of cleaning radioactive environment by collecting contaminated particles.
+A game of cleaning radioactive environment by collecting contaminated
+particles. The protoype of this game was developed at Junction 2019,
+[Angry Birds in 10 years](https://2019.hackjunction.com/challenges/angry-birds-in-10-years)
+game development challenge.
 
 ## Objective
 
@@ -84,7 +87,7 @@ addresses separated by spaces. You can obtain MACs using `btmon`,
 or any other bluetooth scanning tool.
 
 Remember to specify at least one MAC address. Otherwise you get zero
-dose and stay healty for the rest of your life.
+dose and stay healthy for the rest of your life.
 
 ## License
 
