@@ -3,14 +3,15 @@
 ![City of Pripyat (public domain)](docs/pripyat.jpg)
 
 A game of cleaning radioactive environment by collecting contaminated
-particles. The protoype of this game was developed at Junction 2019,
+particles. The protoype of this game was developed at Junction 2019
+and participated in
 [Angry Birds in 10 years](https://2019.hackjunction.com/challenges/angry-birds-in-10-years)
 game development challenge.
 
 ## Objective
 
 Game is scientifically accurate but fun game about finding Bluetooth
-or Wi-Fi beacons which represent radioactive sources. The objective is
+beacons which represent radioactive sources. The objective is
 to clean the environment and get as small dose of radioactivity as
 possible. You have to act fast but avoid near exposure to the sources.
 
@@ -62,8 +63,9 @@ realistically emulate a piezo speaker, we need filtering to make sound
 from those boolean values.
 
 First, a binary waveform (output containing only values 0 or 1) is
-generated with sample rate of 48kHz. Then it is applied to a FIR
-filter which does a band-pass between 1500 ... 4000 Hz which simulates
+generated with sample rate of 48kHz. Then it is applied to a
+[FIR filter](https://en.wikipedia.org/wiki/Finite_impulse_response)
+which does a band-pass between 1500 ... 4000 Hz which simulates
 the physical properties of the speaker case.
 
 ![FIR filtering](docs/fir.png)
@@ -86,19 +88,25 @@ Project doesn't yet have a build file so running is a bit manual:
 ```sh
 cd prototype
 javac Receiver.java
-sudo stdbuf -oL btmon | java Receiver BEACON_MACS...
+sudo stdbuf -oL btmon | java Receiver BEACON_BD_ADDRS...
 ```
 
 RSSI is read from Bluetooth stack temporarily using `btmon` until we
 get a better solution. After that we no longer require `sudo`.
 
-The game supports multiple beacons, in that case list all beacon MAC
-addresses separated by spaces. You can obtain MACs using `btmon`,
+The game supports multiple beacons, in that case list all beacon
+bluetooth addresses addresses separated by spaces. You can obtain
+addresses by using `btmon`,
 [iBKS Config Tool on Android](https://play.google.com/store/apps/details?id=com.accent_systems.ibks_config_tool),
 or any other bluetooth scanning tool.
 
-Remember to specify at least one MAC address. Otherwise you get zero
+Remember to specify at least one address. Otherwise you get zero
 dose and stay healthy for the rest of your life.
+
+In case you don't have any bluetooth beacons around you can mock a
+beacon by using any bluetooth device which is sending packets at least
+once per second. For example you may play some music to a bluetooth
+speaker and use its bluetooth address.
 
 ## License
 
