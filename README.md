@@ -49,15 +49,25 @@ linear so add one zero to get 10 decibels more.
 
 ### Sound generation
 
-In sound generation we realistically emulate a piezo speaker. First, a
-waveform which has a peak lasting only one sample is generated. Then
-it is applied to a FIR filter which does a band-pass between 1500
-... 4000 Hz which simulates the physical properties of the speaker
-case.
+The game doesn't show radiation intensity directly but it can be heard
+as audible clicks. To get realistic intervals between clicks the
+linearized signal strength is applied to
+[exponential distribution](https://en.wikipedia.org/wiki/Exponential_distribution)
+quantile function as a scaling parameter.
+
+In a certain time (duration of one sample in sound output) the
+Geiger-Müller tube either conducts or not. Because we want to
+realistically emulate a piezo speaker, we need filtering to make sound
+from those boolean values.
+
+First, a binary waveform (output containing only values 0 or 1) is
+generated with sample rate of 48kHz. Then it is applied to a FIR
+filter which does a band-pass between 1500 ... 4000 Hz which simulates
+the physical properties of the speaker case.
 
 ![FIR filtering](docs/fir.png)
 
-This resusts a "retro" sound because many modern radiation meters have
+This produces a "retro" sound because many modern radiation meters have
 oscillator and a speaker instead of this. But we want the sound of the
 1980s.
 
