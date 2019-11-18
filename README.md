@@ -56,7 +56,8 @@ linearized signal strength is applied to
 quantile function as a scaling parameter.
 
 In a certain time (duration of one sample in sound output) the
-Geiger-Müller tube either conducts or not. Because we want to
+[Geiger-Müller tube](https://en.wikipedia.org/wiki/Geiger%E2%80%93M%C3%BCller_tube)
+either conducts or not. Because we want to
 realistically emulate a piezo speaker, we need filtering to make sound
 from those boolean values.
 
